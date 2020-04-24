@@ -8,6 +8,9 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
+import {connect} from 'react-redux'
+import authenticateUser from '../Services/Authentication/authenticator'
+import ActivityWaiter from '../activityWaiter'
 
 class Login extends React.Component {
   constructor(props) {
@@ -15,11 +18,46 @@ class Login extends React.Component {
     this.state = {
       image: require('../assets/shutterstock.png'),
       logo: require('../assets/axfoodLogo.png'),
+      username:"",
+      password:"",
+      isLoading:false
+
     };
   }
+  signInHandler(){
+        this.props.authenticateUser(this.state.username,this.state.password).then(resolve=>{
 
-  render() {
-    return (
+            if(resolve=="Resolved")
+            {
+                    this.setState({isLoading:false})
+                    alert("User Authenticated")
+
+            }
+
+
+        },reject=>{
+                    if(reject==403)
+                    {
+                        this.setState({isLoading:false})
+                        alert("Invalid Credentials")
+
+                    }
+                    else {
+                        this.setState({isLoading:false})
+                        alert("Server Error")
+                    }
+
+
+        })
+  }
+  componentDidUpdate(){
+      console.log("username:",this.state.username,"password: ",this.state.password)
+  }
+
+  render() {  const {isLoading}=this.state;
+
+    return ( isLoading?  <ActivityWaiter/>: 
+
       <View style={style.container}>
         <ImageBackground source={this.state.image} style={style.image}>
           <View style={style.parentView}>
@@ -34,17 +72,29 @@ class Login extends React.Component {
                 <TextInput
                   style={style.inputDetails}
                   placeholder={'Enter User Id'}
+                  autoCapitalize={false}
+                  onChangeText={(text)=>{
+                      this.setState({username:text})
+                  }}
                 />
               </View>
               <View style={{...style.divider}}>
                 <TextInput
                   style={style.inputDetails}
                   placeholder={'Password'}
+                  secureTextEntry={true}
+                  autoCapitalize={false}
+                  onChangeText={(text)=>{
+                      this.setState({password:text})
+                  }}
                 />
               </View>
             </View>
             <View style={style.bottomSection}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={()=>{
+                  this.signInHandler()
+                  this.setState({isLoading:true})
+              }}>
                 <View style={style.loginButton}>
                   <Text style={style.loginText}>LOGIN</Text>
                 </View>
@@ -157,4 +207,13 @@ const style = StyleSheet.create({
     marginLeft: 15,
   },
 });
-export default Login;
+
+const mapStateToProps=(state)=>({
+   
+})
+
+const mapDispatchToProps=({
+authenticateUser: authenticateUser
+
+})
+export default connect(mapStateToProps,mapDispatchToProps)(Login)
