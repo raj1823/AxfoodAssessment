@@ -7,7 +7,8 @@ class ActivityWaiter extends React.Component{
     render(){
         return(
             <SafeAreaView style={{flex:1}}>
-            <ActivityIndicator style={style.indicatorstyling}/>
+            <ActivityIndicator style={style.indicatorstyling}
+                                size="large" color="#e06e26"/>
             </SafeAreaView>
         )
     }

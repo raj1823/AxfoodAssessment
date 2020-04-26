@@ -8,9 +8,13 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import {connect} from 'react-redux'
-import authenticateUser from '../Services/Authentication/authenticator'
-import ActivityWaiter from '../activityWaiter'
+import {connect} from 'react-redux';
+import {
+  authenticateUser,
+  loadConcept,
+} from '../Services/Authentication/authenticator';
+import ActivityWaiter from '../activityWaiter';
+import AsyncStorage from '@react-native-community/async-storage'
 
 class Login extends React.Component {
   constructor(props) {
@@ -18,46 +22,116 @@ class Login extends React.Component {
     this.state = {
       image: require('../assets/shutterstock.png'),
       logo: require('../assets/axfoodLogo.png'),
-      username:"",
-      password:"",
-      isLoading:false
-
+      username: '',
+      password: '',
+      isLoading: false,
+      
     };
+    console.log("constructor called:",this.props)
+    this.isUserLoggedIn()
   }
-  signInHandler(){
-        this.props.authenticateUser(this.state.username,this.state.password).then(resolve=>{
-
-            if(resolve=="Resolved")
-            {
-                    this.setState({isLoading:false})
-                    alert("User Authenticated")
-
+  signInHandler() {
+    if (!this.state.username || !this.state.password) {
+      this.setState({isLoading: false});
+      alert('Please fill the details');
+    } else {
+      this.props
+        .authenticateUser(this.state.username, this.state.password)
+        .then(
+          resolve => {
+            if (resolve == 'Resolved') {
+              this.setState({username:"",password:""})
+              
+              this.props.fetchData(this.props.token).then(
+                resolve => {
+                  if (resolve === 'Success') {
+                    this.setState({isLoading: false});
+                    this.props.navigation.navigate('Concept');
+                  }
+                },
+                reject => {
+                  if (reject === 403) {
+                    alert('Fetch Error');
+                    this.setState({isLoading: false});
+                  } else {
+                    alert('Server Error');
+                    this.setState({isLoading: false});
+                  }
+                },
+              );
             }
-
-
-        },reject=>{
-                    if(reject==403)
-                    {
-                        this.setState({isLoading:false})
-                        alert("Invalid Credentials")
-
-                    }
-                    else {
-                        this.setState({isLoading:false})
-                        alert("Server Error")
-                    }
-
-
-        })
+          },
+          reject => {
+            if (reject == 403) {
+              this.setState({isLoading: false});
+              alert('Invalid Credentials');
+            }
+            if (reject == 'Rejected') {
+              this.setState({isLoading: false});
+              alert('Server Error');
+            }
+          },
+        );
+    }
   }
-  componentDidUpdate(){
-      console.log("username:",this.state.username,"password: ",this.state.password)
+  componentDidUpdate() {
+    console.log(
+      'username:',
+      this.state.username,
+      'password: ',
+      this.state.password,
+    );
   }
 
-  render() {  const {isLoading}=this.state;
 
-    return ( isLoading?  <ActivityWaiter/>: 
+  isUserLoggedIn()
+  {   console.log("Props before rendering: ",this.props)
+      
+     
+    AsyncStorage.getItem('token').then(value=>{
 
+      console.log("token is", value)
+      if(value!=null)
+      {this.props.fetchData(value).then(
+        resolve => {
+          if (resolve === 'Success') {
+            alert("Welcome Back!!")
+            this.props.navigation.navigate('Concept');
+          }
+        },
+        reject => {
+          if (reject === 403) {
+            alert('Fetch Error');
+           
+          } else {
+            alert('Server Error');
+            
+          }
+        },
+      );}
+      
+
+
+    })
+    
+      
+     
+    
+
+  }
+  // componentDidMount(){
+  //   console.log("component unmounted")
+  //    this.setState({username:""})
+  //    this.setState({password:""})
+  // }
+  
+  render() {
+    const {isLoading} = this.state;
+    console.log("Global States",this.props)
+
+    return isLoading ? (
+      <ActivityWaiter />
+    ) : (
       <View style={style.container}>
         <ImageBackground source={this.state.image} style={style.image}>
           <View style={style.parentView}>
@@ -73,8 +147,9 @@ class Login extends React.Component {
                   style={style.inputDetails}
                   placeholder={'Enter User Id'}
                   autoCapitalize={false}
-                  onChangeText={(text)=>{
-                      this.setState({username:text})
+                  blurOnSubmit={true}
+                  onChangeText={text => {
+                    this.setState({username: text});
                   }}
                 />
               </View>
@@ -84,17 +159,18 @@ class Login extends React.Component {
                   placeholder={'Password'}
                   secureTextEntry={true}
                   autoCapitalize={false}
-                  onChangeText={(text)=>{
-                      this.setState({password:text})
+                  onChangeText={text => {
+                    this.setState({password: text});
                   }}
                 />
               </View>
             </View>
             <View style={style.bottomSection}>
-              <TouchableOpacity onPress={()=>{
-                  this.signInHandler()
-                  this.setState({isLoading:true})
-              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({isLoading: true});
+                  this.signInHandler();
+                }}>
                 <View style={style.loginButton}>
                   <Text style={style.loginText}>LOGIN</Text>
                 </View>
@@ -135,7 +211,7 @@ const style = StyleSheet.create({
     fontSize: 15,
     color: '#a19d9a',
     alignSelf: 'flex-end',
-    fontWeight:'600'
+    fontWeight: '600',
   },
   forgotPassword: {
     alignSelf: 'center',
@@ -143,7 +219,7 @@ const style = StyleSheet.create({
     color: '#a19d9a',
     marginTop: 12,
     marginBottom: 20,
-    fontWeight:'600'
+    fontWeight: '600',
   },
   topSection: {
     flex: 1,
@@ -158,13 +234,13 @@ const style = StyleSheet.create({
     borderBottomWidth: 1,
     marginLeft: 15,
     marginRight: 20,
-    fontWeight:'600',
-    color:"#a19d9a"
+    fontWeight: '600',
+    color: '#a19d9a',
   },
   signUpText: {
     fontSize: 15,
     color: '#e06e26',
-    fontWeight:'600'
+    fontWeight: '600',
   },
   midSection: {
     flex: 1,
@@ -208,12 +284,19 @@ const style = StyleSheet.create({
   },
 });
 
-const mapStateToProps=(state)=>({
-   
-})
+const mapStateToProps = state => ({
+  token: state.authenticate_Reducer.token,
+  success: state.authenticate_Reducer.success,
+  conceptData: state.authenticate_Reducer.conceptData,
+  storeData: state.authenticate_Reducer.storeData,
+  searchedData:state.authenticate_Reducer.storeSearchData
+});
 
-const mapDispatchToProps=({
-authenticateUser: authenticateUser
-
-})
-export default connect(mapStateToProps,mapDispatchToProps)(Login)
+const mapDispatchToProps = {
+  authenticateUser: authenticateUser,
+  fetchData: loadConcept,
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Login);
