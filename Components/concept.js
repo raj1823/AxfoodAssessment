@@ -27,17 +27,18 @@ class Concept extends React.Component {
     };
   }
   componentDidMount() {
+
+
+    
     console.log('did mount called');
+    
     try{
     AsyncStorage.setItem('token',this.props.token)
     }
     catch{
     console.log('Failed to save the data to the storage')
     }
-    // AsyncStorage.getItem('token').then(value=>{
-    //   var tokenAsync= value;
-    //   console.log("token in async:",tokenAsync)
-    // })
+   
     
   }
   componentDidUpdate() {
@@ -70,7 +71,7 @@ class Concept extends React.Component {
         <View style={style.searchView}>
           <Image source={this.state.path} style={style.arrowStyling} />
 
-          <Text style={style.headingStyle}>Concepts</Text>
+          <Text style={style.headingStyle}>Select Concept</Text>
           
         </View>
        
@@ -96,7 +97,7 @@ class Concept extends React.Component {
                 }}>
                 <View style={style.templateStyling}>
                   <Text style={style.ConceptStyling}>
-                    Concept Name:{item.name}
+                    {item.name}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -116,6 +117,7 @@ const style = StyleSheet.create({
   headingStyle: {
     fontSize: 32,
     fontWeight: '600',
+    margin:5,
     
   },
   searchView: {
@@ -140,7 +142,7 @@ const style = StyleSheet.create({
   logoutView:{
     flexDirection:"row",
     justifyContent:"flex-end",
-    flex:0.5,
+    flex:0.4,
     backgroundColor:"#fff"
   },
   ConceptStyling: {

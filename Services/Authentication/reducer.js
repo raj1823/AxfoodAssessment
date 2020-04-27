@@ -4,7 +4,8 @@ import {
   CONCEPT_DATA_SUCCESS,
   STORE_DATA_SUCCESS,
   SEARCHED_STORE_DATA_SUCCESS,
-  LOGOUT
+  LOGOUT,
+  SET_TOKEN
 } from './constant';
 
 const initialState = {
@@ -57,11 +58,16 @@ const authenticate_Reducer = (state = initialState, action) => {
 
            ...state,
             success:false,
-            token:'',
+           // token:'',
             conceptData: [],
-            storeData:[],
-            storeSearchData:[]
+            //storeData:[],
+           // storeSearchData:[]
           }
+          // case SET_TOKEN:
+          //   return{
+          //     ...state,
+          //     token:action.token
+          //   }
 
     default:
       return state;

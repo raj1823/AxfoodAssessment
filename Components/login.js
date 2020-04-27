@@ -12,9 +12,10 @@ import {connect} from 'react-redux';
 import {
   authenticateUser,
   loadConcept,
+  //setUserToken
 } from '../Services/Authentication/authenticator';
 import ActivityWaiter from '../activityWaiter';
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-community/async-storage';
 
 class Login extends React.Component {
   constructor(props) {
@@ -25,10 +26,9 @@ class Login extends React.Component {
       username: '',
       password: '',
       isLoading: false,
-      
     };
-    console.log("constructor called:",this.props)
-    this.isUserLoggedIn()
+    console.log('constructor called:', this.props);
+    this.isUserLoggedIn();
   }
   signInHandler() {
     if (!this.state.username || !this.state.password) {
@@ -40,8 +40,8 @@ class Login extends React.Component {
         .then(
           resolve => {
             if (resolve == 'Resolved') {
-              this.setState({username:"",password:""})
-              
+              this.setState({username: '', password: ''});
+
               this.props.fetchData(this.props.token).then(
                 resolve => {
                   if (resolve === 'Success') {
@@ -50,7 +50,7 @@ class Login extends React.Component {
                   }
                 },
                 reject => {
-                  if (reject === 403) {
+                  if (reject === 500) {
                     alert('Fetch Error');
                     this.setState({isLoading: false});
                   } else {
@@ -83,51 +83,37 @@ class Login extends React.Component {
     );
   }
 
+  isUserLoggedIn() {
+    console.log('Props before rendering: ', this.props);
 
-  isUserLoggedIn()
-  {   console.log("Props before rendering: ",this.props)
-      
-     
-    AsyncStorage.getItem('token').then(value=>{
+    AsyncStorage.getItem('token').then(value => {
+      //this.props.setToken(value)
 
-      console.log("token is", value)
-      if(value!=null)
-      {this.props.fetchData(value).then(
-        resolve => {
-          if (resolve === 'Success') {
-            alert("Welcome Back!!")
-            this.props.navigation.navigate('Concept');
-          }
-        },
-        reject => {
-          if (reject === 403) {
-            alert('Fetch Error');
-           
-          } else {
-            alert('Server Error');
-            
-          }
-        },
-      );}
-      
-
-
-    })
-    
-      
-     
-    
-
+      console.log('token isUserLOggedIn is', value);
+      console.log('GS:', this.props.token);
+      if (value != null) {
+        this.props.fetchData(value).then(
+          resolve => {
+            if (resolve === 'Success') {
+              alert('Welcome Back!!');
+              this.props.navigation.navigate('Concept');
+            }
+          },
+          reject => {
+            if (reject === 403) {
+              alert('Fetch Error');
+            } else {
+              alert('Server Error');
+            }
+          },
+        );
+      }
+    });
   }
-  // componentDidMount(){
-  //   console.log("component unmounted")
-  //    this.setState({username:""})
-  //    this.setState({password:""})
-  // }
-  
+
   render() {
     const {isLoading} = this.state;
-    console.log("Global States",this.props)
+    console.log('Global States', this.props);
 
     return isLoading ? (
       <ActivityWaiter />
@@ -289,12 +275,13 @@ const mapStateToProps = state => ({
   success: state.authenticate_Reducer.success,
   conceptData: state.authenticate_Reducer.conceptData,
   storeData: state.authenticate_Reducer.storeData,
-  searchedData:state.authenticate_Reducer.storeSearchData
+  searchedData: state.authenticate_Reducer.storeSearchData,
 });
 
 const mapDispatchToProps = {
   authenticateUser: authenticateUser,
   fetchData: loadConcept,
+  //setToken: setUserToken
 };
 export default connect(
   mapStateToProps,

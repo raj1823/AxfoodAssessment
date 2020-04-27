@@ -36,9 +36,10 @@ class SearchStore extends React.Component {
         }
       },
       reject => {
-        if (reject === 403) {
+        if (reject === 500) {
           alert('Fetch Error');
           this.setState({isLoading: false});
+          this.props.navigation.navigate("Concept")
         } else {
           alert('Server Error');
           this.setState({isLoading: false});

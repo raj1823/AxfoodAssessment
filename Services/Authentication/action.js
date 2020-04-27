@@ -4,7 +4,8 @@ import {
     CONCEPT_DATA_SUCCESS,
     STORE_DATA_SUCCESS,
     SEARCHED_STORE_DATA_SUCCESS,
-    LOGOUT
+    LOGOUT,
+    SET_TOKEN
 } from './constant'
 
 export function isLoginSuccess(header)
@@ -67,6 +68,15 @@ export const isLoggedOut =()=>dispatch=>
     
 
 }
+// export const setUserToken=(token)=>dispatch=>
+// {
+//     dispatch(
+//         { 
+//             type:SET_TOKEN,
+//             token:token
+//         }
+//     )
+// }
 
 
 

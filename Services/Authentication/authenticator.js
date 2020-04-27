@@ -63,7 +63,7 @@ export function loadConcept(token) {
             return res.json();
           }
 
-          if (res.status == 403) reject(403);
+          if (res.status == 500) reject(500);
         })
         .then(data => {
           console.log('data received:', data);
@@ -79,8 +79,10 @@ export function loadConcept(token) {
 
 export function loadStores(token) {
   return dispatch => {
+    
     return new Promise(function(resolve, reject) {
-      console.log('inside Load Stores');
+      console.log('inside Load Stores:',token);
+      
       fetch(
         'https://admin-stage.priskoll.occdev.axfood.se/axfood/axfood-product-scan/stores',
         {
@@ -96,7 +98,7 @@ export function loadStores(token) {
             return res.json();
           }
 
-          if (res.status == 403) reject(403);
+          if (res.status == 500) reject(500);
         })
         .then(data => {
           console.log(' store data received:', data);
