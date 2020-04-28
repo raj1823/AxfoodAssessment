@@ -8,15 +8,19 @@ import {
   
 } from '../Authentication/action';
 
+import config from '../../config/env'
+
 export function authenticateUser(username, password) {
   return dispatch => {
     return new Promise(function(resolve, reject) {
       console.log('fetch called');
       console.log('username:', username);
       console.log('password:', password);
+      // let apiConfig=config.apiURL;
+      // let pageURl=config.apiConfig.loginUserHandle.loginApi
+      // console.log("api formed:",apiConfig,apiURL)
 
-      fetch(
-        'https://admin-stage-temp.priskoll.occdev.axfood.se/axfood/axfood-security/login',
+      fetch( "https://admin-stage-temp.priskoll.occdev.axfood.se/axfood/axfood-security/login",
         {
           method: 'POST',
           body: JSON.stringify({

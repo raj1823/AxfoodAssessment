@@ -1,25 +1,48 @@
-import React from 'react'
-import {ActivityIndicator, StyleSheet} from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import React from 'react';
+import {ActivityIndicator, StyleSheet, Modal, View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {
+  BallIndicator,
+  BarIndicator,
+  DotIndicator,
+  MaterialIndicator,
+  PacmanIndicator,
+  PulseIndicator,
+  SkypeIndicator,
+  UIActivityIndicator,
+  WaveIndicator,
+} from 'react-native-indicators';
 
-class ActivityWaiter extends React.Component{
-
-    render(){
-        return(
-            <SafeAreaView style={{flex:1}}>
-            <ActivityIndicator style={style.indicatorstyling}
-                                size="large" color="#e06e26"/>
-            </SafeAreaView>
-        )
-    }
+class ActivityWaiter extends React.Component {
+  render() {
+    return (
+      <Modal transparent={true} animationType={'none'} visible={true}>
+          <View style={style.modalBackground}>
+    <View style={style.activityIndicatorWrapper}>
+        <PacmanIndicator color="#e06e26" size={70} />
+        </View>
+        </View>
+      </Modal>
+    );
+  }
 }
-const style= StyleSheet.create({
-
-    indicatorstyling: {
+const style = StyleSheet.create({
+    modalBackground: {
         flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
-        padding: 30,
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        backgroundColor: '#00000040'
       },
-})
-export default ActivityWaiter
+      activityIndicatorWrapper: {
+        backgroundColor: '#FFFFFF',
+        height: 100,
+        padding:20,
+        width: 100,
+        borderRadius: 10,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-around'
+      }
+});
+export default ActivityWaiter;

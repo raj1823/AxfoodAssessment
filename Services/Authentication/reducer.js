@@ -17,6 +17,7 @@ const initialState = {
   storeData:[],
   storeSearchData:[],
 
+
 };
 
 const authenticate_Reducer = (state = initialState, action) => {
@@ -63,11 +64,11 @@ const authenticate_Reducer = (state = initialState, action) => {
             //storeData:[],
            // storeSearchData:[]
           }
-          // case SET_TOKEN:
-          //   return{
-          //     ...state,
-          //     token:action.token
-          //   }
+          case SET_TOKEN:
+            return{
+              ...state,
+              token:action.token
+            }
 
     default:
       return state;

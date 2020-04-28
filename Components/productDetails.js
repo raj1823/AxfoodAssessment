@@ -25,23 +25,24 @@ class ProductDetails extends React.Component {
     const {ProductDetails} = this.state;
     console.log('Product Details:', ProductDetails);
     console.log('props :', this.props);
-    
 
     if (ProductDetails.price) this.setState({price: ProductDetails.price});
     if (ProductDetails.volume) this.setState({quantity: ProductDetails.volume});
     return (
       <SafeAreaView style={style.parentStyle}>
         <View style={style.parentProductView}>
-          <TouchableOpacity
-            onPress={() => {
-              this.props.navigation.navigate('SearchStore');
-            }}>
-            <View style={style.searchView}>
+          <View style={style.searchView}>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.navigate('SearchStore');
+              }}>
               <Image source={this.state.path} style={style.arrowStyling} />
-
+            </TouchableOpacity>
+            <View>
               <Text style={style.headingStyle}> Product Details</Text>
             </View>
-          </TouchableOpacity>
+          </View>
+
           <View style={{paddingHorizontal: 20, paddingVertical: 15}}>
             <Text style={style.productNameStyling}>
               {ProductDetails.productName}
@@ -169,9 +170,7 @@ const style = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-    
-});
+const mapStateToProps = state => ({});
 
 const mapDispatchToProps = {};
 

@@ -68,15 +68,16 @@ export const isLoggedOut =()=>dispatch=>
     
 
 }
-// export const setUserToken=(token)=>dispatch=>
-// {
-//     dispatch(
-//         { 
-//             type:SET_TOKEN,
-//             token:token
-//         }
-//     )
-// }
+
+export const setUserToken=(token)=>dispatch=>
+{
+    dispatch(
+        { 
+            type:SET_TOKEN,
+            token:token
+        }
+    )
+}
 
 
 

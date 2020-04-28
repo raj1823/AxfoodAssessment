@@ -12,8 +12,10 @@ import {connect} from 'react-redux';
 import {
   authenticateUser,
   loadConcept,
-  //setUserToken
+  
 } from '../Services/Authentication/authenticator';
+
+import {setUserToken} from '../Services/Authentication/action'
 import ActivityWaiter from '../activityWaiter';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -28,7 +30,7 @@ class Login extends React.Component {
       isLoading: false,
     };
     console.log('constructor called:', this.props);
-    this.isUserLoggedIn();
+    
   }
   signInHandler() {
     if (!this.state.username || !this.state.password) {
@@ -40,7 +42,7 @@ class Login extends React.Component {
         .then(
           resolve => {
             if (resolve == 'Resolved') {
-              this.setState({username: '', password: ''});
+              this.setState({password: ''});
 
               this.props.fetchData(this.props.token).then(
                 resolve => {
@@ -74,6 +76,7 @@ class Login extends React.Component {
         );
     }
   }
+  
   componentDidUpdate() {
     console.log(
       'username:',
@@ -82,12 +85,16 @@ class Login extends React.Component {
       this.state.password,
     );
   }
+  componentDidMount(){
 
-  isUserLoggedIn() {
+    this.isUserLoggedIn();
+  }
+
+  isUserLoggedIn=()=> {
     console.log('Props before rendering: ', this.props);
 
     AsyncStorage.getItem('token').then(value => {
-      //this.props.setToken(value)
+      this.props.setToken(value)
 
       console.log('token isUserLOggedIn is', value);
       console.log('GS:', this.props.token);
@@ -134,6 +141,7 @@ class Login extends React.Component {
                   placeholder={'Enter User Id'}
                   autoCapitalize={false}
                   blurOnSubmit={true}
+                  defaultValue={this.state.username}
                   onChangeText={text => {
                     this.setState({username: text});
                   }}
@@ -281,7 +289,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   authenticateUser: authenticateUser,
   fetchData: loadConcept,
-  //setToken: setUserToken
+  setToken: setUserToken
 };
 export default connect(
   mapStateToProps,
